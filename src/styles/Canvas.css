@@ -1,8 +1,7 @@
 body{
-    background-color: #806cf7;
+    background-color: #225712;
 }
 canvas{
-    border: 1px solid rgb(0, 0, 0);
     position: absolute;
     left: 0;
 }
