@@ -29,17 +29,32 @@ export default class Canvas extends React.Component {
     this.canvasHex.height = canvasHeight;
     this.canvasCoordinates.width = canvasWidth;
     this.canvasCoordinates.height = canvasHeight;
+    this.canvasCharacters.width = canvasWidth;
+    this.canvasCharacters.height = canvasHeight;
     this.getCanvasPosition(this.canvasCoordinates);
 
+
     let img = new Image();
+    //let mg = new Image();
+    //let imgPess = new Image();
     //img.src = "battle background/CmBkLava.png";
-    img.src = "battle background/CmBkBch.png";
-    img.onload = () => { this.drawImage(img, this.canvasHex); this.drawHexes() };
+    //img.src = "battle background/CmBkBch.png";
+    img.src = "battle background/CmBkDes.png";
+    //mg.src = "pess.png";
+    //imgPess.src = "pess.png";
+    img.onload = () => { this.drawBackground(img, this.canvasHex); this.drawHexes() };
+    //mg.onload = () => { this.drawImage(mg, this.canvasCharacters, this.Point(50, 50))};
+    //imgPess.onload = () => { this.drawImage(imgPess, this.canvasCoordinates)};
   }
 
-  drawImage(img, canvasID) {
+  drawBackground(img, canvasID) {
     const ctx = canvasID.getContext("2d");
-    ctx.drawImage(img, 0, 0,  this.canvasHex.width, this.canvasHex.height);
+    ctx.drawImage(img, 0, 0, this.canvasHex.width, this.canvasHex.height);
+  }
+  drawImage(img, canvasID, center) {
+    const ctx = canvasID.getContext("2d");
+    ctx.clearRect(0, 0,  this.canvasCharacters.width, this.canvasCharacters.height);
+    ctx.drawImage(img, center.x, center.y, 100, 150);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -47,17 +62,23 @@ export default class Canvas extends React.Component {
       const { q, r, s, x, y } = nextState.currentHex;
       const { canvasWidth, canvasHeight } = this.state.canvasSize;
       const ctx = this.canvasCoordinates.getContext("2d");
+      const ctx2 = this.canvasHex.getContext("2d");
+
+
+      let img = new Image();
+      img.src = "pess.png";
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
       //this.drawNeighbors(this.Hex(q, r, s));
       let currentDistanceLine = nextState.currentDistanceLine;
       for (let i = 0; i <= currentDistanceLine.length - 2; i++) {
         if (i == 0) {
           this.drawHex(this.canvasCoordinates, this.Point(currentDistanceLine[i].x, currentDistanceLine[i].y), "black", 1, "red");
+          img.onload = () => { this.drawImage(img, this.canvasCharacters, this.Point(currentDistanceLine[i].x - 50, currentDistanceLine[i].y - 150))};
         } else {
           this.drawHex(this.canvasCoordinates, this.Point(currentDistanceLine[i].x, currentDistanceLine[i].y), "black", 1, "grey");
         }
       }
-      this.drawHex(this.canvasCoordinates, this.Point(x, y), "black", 1, "grey");
+      this.drawHex(this.canvasCoordinates, this.Point(x, y), "black", 1, "lime");
       return true;
     }
     return false;
@@ -292,6 +313,7 @@ export default class Canvas extends React.Component {
       <div>
         <canvas ref={canvasHex => this.canvasHex = canvasHex}> </canvas>
         <canvas ref={canvasCoordinates => this.canvasCoordinates = canvasCoordinates} onMouseMove={this.handleMouseMove} onClick={this.handleClick}> </canvas>
+        <canvas ref={canvasCharacters => this.canvasCharacters = canvasCharacters}onMouseMove={this.handleMouseMove} onClick={this.handleClick}></canvas>
       </div>
     )
   }
